@@ -20,6 +20,7 @@ class BookBase(BaseModel):
     author: str = Field(
         min_length=1,
         max_length=120,
+
         description= "The author of the book."
     )
     isbn: str = Field(

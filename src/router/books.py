@@ -43,7 +43,12 @@ def set_book(book_id: int, new_book: BookResponse):
     response_model=BookResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a book",
-    description="Creates a book from all required inputs."
+    description="Creates a book from all required inputs.",
+    responses= {
+        201: {
+            "description": "The created book",
+        }
+    }
 )
 def create_book(base: BookInput) -> BookResponse:
     next_id = get_next_book_id()
@@ -56,7 +61,12 @@ def create_book(base: BookInput) -> BookResponse:
     response_model=List[BookResponse],
     status_code=status.HTTP_200_OK,
     summary="Gets all books",
-    description="Gets all books from the library."
+    description="Gets all books from the library.",
+    responses={
+        200: {
+            "description": "A list of books",
+        }
+    }
 )
 def get_books() -> List[BookResponse]:
     return books
