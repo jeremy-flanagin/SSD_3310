@@ -7,9 +7,6 @@ tags = [
     {
         "name": "Books",
         "description": "Manages books in the system",
-        "responses": {
-
-        }
     },
     {
         "name": "Members",
