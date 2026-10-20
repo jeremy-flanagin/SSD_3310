@@ -45,36 +45,31 @@ git clone https://github.com/jeremy-flanagin/SSD_3310.git
 cd SSD_3310
 git checkout main
 ```
+
+### Install Dependencies
+
+Install the required Python packages:
+```bash
+pip install uv
+```
+```bash
+uv sync
+```
+
 ### Create a Virtual Environment
 
 Creating a virtual environment keeps the project's dependencies separate from other Python projects.
 
 
-macOS and Linux
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+uv venv
 ```
-Windows PowerShell
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-### Install Dependencies
 
-Install the required Python packages:
-```bash
-pip install fastapi uvicorn
-```
-If the project includes a dependency file, install from it instead:
-```bash
-pip install -r requirements.txt
-```
 ### Running the API
 
-Start the development server from the project root:
+Start the server from the project root:
 ```bash
-uvicorn main:app --reload
+uvicorn src.main:api --reload
 ```
 The API should be available at:
 ```text
@@ -82,10 +77,6 @@ http://127.0.0.1:8000
 ```
 The --reload option automatically restarts the server when source files are changed.
 
-If the application's FastAPI instance is located in a different module, update the command accordingly. For example:
-```bash
-uvicorn app.main:app --reload
-```
 ### API Documentation
 
 Once the server is running, FastAPI provides two documentation interfaces:
