@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, status, HTTPException
 
+from src.router.members import find_member
 from src.schema.books import BookInput, BookResponse, BookPatchInput
 from src.storage import books
 
@@ -47,10 +48,14 @@ def set_book(book_id: int, new_book: BookResponse):
     responses= {
         201: {
             "description": "The created book",
+        },
+        404: {
+            "description": "Member not found",
         }
     }
 )
 def create_book(base: BookInput) -> BookResponse:
+    find_member(base.member_id)
     next_id = get_next_book_id()
     book = BookResponse(id=next_id, **base.model_dump())
     books.append(book)
