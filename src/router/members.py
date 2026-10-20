@@ -78,9 +78,11 @@ def get_member(member_id: int) -> MemberResponse:
     response_model=List[BookResponse],
     status_code=status.HTTP_200_OK,
     summary="Gets the books a member is holding",
-    description="Gets the books a member is holding using the given id."
+    description="Gets the books a member is holding using the given id.",
+    responses = {404: {"description": "Member not found"}}
 )
 def get_member_books(member_id: int) -> List[BookResponse]:
+    find_member(member_id)
     return [book for book in books if member_id == book.member_id]
 
 @router.patch(

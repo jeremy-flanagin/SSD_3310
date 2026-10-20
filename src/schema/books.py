@@ -33,7 +33,6 @@ class BookBase(BaseModel):
         description= "The year the book was published."
     )
     member_id: int = Field(
-        default=-1,
         description="The id of the member holding the book."
     )
 
@@ -74,8 +73,7 @@ class BookPatchInput(BaseModel):
         default=date.today().year,
         description="The year the book was published."
     )
-    member_id: int = Field(
-        default=-1,
+    member_id: Optional[int] = Field(
         description="The id of the member holding the book."
     )
 
