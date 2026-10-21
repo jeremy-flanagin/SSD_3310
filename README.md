@@ -66,7 +66,11 @@ uv venv
 ### Running the API
 
 Before running:
-Create the database using the script setup_database.sql in /scripts/
+Create the SQL database by running the command, replacing the file link with
+your PostgreSQL installation.
+```powershell
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -d postgres -f scripts\setup_database.sql
+```
 
 Start the server from the project root:
 ```bash
