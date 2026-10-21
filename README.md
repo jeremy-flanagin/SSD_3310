@@ -35,6 +35,7 @@ Install the following before running the project:
 - Python 3.9 or newer
 - Git
 - pip
+- PostreSQL
 
 ### Clone the Repository
 
@@ -63,6 +64,9 @@ uv venv
 ```
 
 ### Running the API
+
+Before running:
+Create the database using the script setup_database.sql in /scripts/
 
 Start the server from the project root:
 ```bash
@@ -192,15 +196,48 @@ The current project structure is:
 ```text
 SSD\_3310/
 ├── README.md
-├── requirements.txt
-└── app/
+├── pyproject.toml
+├── .env.example
+├── uv.lock
+└── src/
     ├── __init__.py
     ├── main.py
-    ├── models.py
-    └── routes/
+    ├── exceptions.py
+    ├── config.py
+    ├── service_accessor.py
+    └── database/
+        ├── __init__.py
+        └── session.py
+    └── models/
+        ├── __init__.py
+        ├── base.py
+        ├── book.py
+        └── members.py
+    └── repositories/
+        ├── __init__.py
+        ├── book.py
+        └── member.py
+    └── router/
+        ├── __init__.py
+        ├── books.py
+        ├── http_errors.py
+        └── members.py
+    └── schema/
         ├── __init__.py
         ├── books.py
         └── members.py
+    └── schema/
+        └── books/
+            ├── __init__.py
+            ├── base.py
+            ├── database.py
+            └── memory.py
+        └── members/
+            ├── __init__.py
+            ├── base.py
+            ├── database.py
+            └── memory.py
+        ├── __init__.py
+        ├── in_memory_store.py
 ```
-The main.py file contains the FastAPI application and route definitions. The requirements.txt file contains the Python dependencies needed to run the API.
-
+The main.py file contains the FastAPI application and route definitions.
