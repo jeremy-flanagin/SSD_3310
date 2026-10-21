@@ -52,9 +52,6 @@ Install the required Python packages:
 ```bash
 pip install uv
 ```
-```bash
-uv sync
-```
 
 ### Create a Virtual Environment
 

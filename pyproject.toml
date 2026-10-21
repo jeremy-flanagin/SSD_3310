@@ -1,13 +1,17 @@
 [project]
 name = "ssd-3310"
-version = "0.1.0"
+version = "0.2.0"
 description = "Functions as a Library Management System API"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi[standard]>=0.141.1",
-    "pydantic-extra-types>=2.11.1",
+    "fastapi[standard]>=0.141.0",
+    "pydantic-settings>=2.16.0",
+    "pydantic-extra-types>=2.11.0",
+    "phonenumbers>=9.0.0",
     "email-validator>=2.3.0",
+    "sqlalchemy>=2.0.0",
+    "psycopg[binary] >= 3.3.0"
 ]
 
 [project.urls]
