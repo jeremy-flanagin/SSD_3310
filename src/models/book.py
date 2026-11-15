@@ -2,6 +2,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 
 from src.models.base import Base
+from src.models.member import Member
 
 
 class Book(Base):

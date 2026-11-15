@@ -5,7 +5,7 @@ from src.services.members.base import MemberService
 
 
 def get_book_service(request: Request) -> BookService:
-    return request.app.state.book_service
+    return request.app.book_service
 
 
 def get_member_service(request: Request) -> MemberService:

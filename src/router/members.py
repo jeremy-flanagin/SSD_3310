@@ -24,7 +24,7 @@ router = APIRouter(prefix="/members", tags=["Members"])
     summary="Gets all members",
     description="Gets all members of the library."
 )
-def get_members(service: MemberService = Depends(get_member_service)) -> List[MemberResponse]:
+def get_members(service: MemberService = Depends(get_member_service)) -> List[Member]:
     return service.get_members()
 
 @router.get(

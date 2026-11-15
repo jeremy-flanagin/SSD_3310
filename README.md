@@ -78,7 +78,7 @@ uvicorn src.main:api --reload
 ```
 The API should be available at:
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:8000/docs#/
 ```
 The --reload option automatically restarts the server when source files are changed.
 
