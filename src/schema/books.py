@@ -55,22 +55,27 @@ class BookPatchInput(BaseModel):
     title: Optional[str] = Field(
         min_length=1,
         max_length=200,
+        default=None,
         description="The title of the book."
     )
     author: Optional[str] = Field(
         min_length=1,
         max_length=120,
+        default=None,
         description="The author of the book."
     )
     isbn: Optional[str] = Field(
+        default=None,
         description="The ISBN of the book."
     )
     published_year: Optional[int] = Field(
         ge=1450,
         le=date.today().year,
+        default=None,
         description="The year the book was published."
     )
     member_id: Optional[int] = Field(
+        default=None,
         description="The id of the member holding the book."
     )
 

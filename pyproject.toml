@@ -11,7 +11,9 @@ dependencies = [
     "phonenumbers>=9.0.0",
     "email-validator>=2.3.0",
     "sqlalchemy>=2.0.0",
-    "psycopg[binary] >= 3.3.0"
+    "psycopg[binary] >= 3.3.0",
+    "pytest>=9.2.0",
+    "mockito>=2.0.0"
 ]
 
 [project.urls]

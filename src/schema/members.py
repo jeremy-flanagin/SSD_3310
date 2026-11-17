@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Optional, Annotated, Union
 
+from phonenumbers import PhoneNumber
 from pydantic import BaseModel, Field, ConfigDict, field_validator, EmailStr
-from pydantic_extra_types.phone_numbers import PhoneNumber
+from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 
 class MemberBase(BaseModel):
     model_config = ConfigDict(
@@ -23,32 +24,41 @@ class MemberBase(BaseModel):
     membership_id: str = Field(
         description="The id of the membership held by the member.",
     )
-    phone: PhoneNumber = Field(
+    phone: Annotated[Union[str, PhoneNumber], PhoneNumberValidator(default_region='US')] = Field(
         description="The member's phone number.",
-        examples=["491-526-5225"],
+        examples=["214-895-3258"],
     )
 
 class MemberInput(MemberBase):
     pass
 
-class MemberPatchInput(MemberBase):
+class MemberPatchInput(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
         frozen=True,
         str_strip_whitespace=True
     )
 
-    name: str
+    name: str = Field(
+        min_length=1,
+        max_length=120,
+        default=None,
+        description="The name of the member.",
+        examples=["Dane Deckerson"]
+    )
     email: Optional[EmailStr] = Field(
         description="The member's email address.",
+        default=None,
         examples=["DaneDeckerson@gmail.com"]
     )
     membership_id: Optional[str] = Field(
+        default=None,
         description="The id of the membership held by the member.",
     )
-    phone: Optional[PhoneNumber] = Field(
+    phone: Optional[Annotated[Union[str, PhoneNumber], PhoneNumberValidator(default_region='US')]] = Field(
         description="The member's phone number.",
-        examples=["491-526-5225"]
+        default=None,
+        examples=["214-895-3258"]
     )
 
 class MemberResponse(MemberBase):
