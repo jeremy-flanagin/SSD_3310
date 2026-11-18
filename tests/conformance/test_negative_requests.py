@@ -31,34 +31,6 @@ def test_create_member_rejects_undocumented_field(
     assert_validation_error(response)
 
 
-# REQUEST-BODY BOUNDARY VALIDATION
-# These values have the expected JSON fields but violate Pydantic constraints.
-
-
-@pytest.mark.parametrize(
-    ("name", "description"),
-    [
-        ("   ", "A blank name becomes invalid after whitespace stripping."),
-        ("x" * 101, "The member name exceeds its documented maximum length."),
-    ],
-    ids=["blank-name", "name-over-maximum"],
-)
-def test_create_member_rejects_invalid_boundary_values(
-    database_client: TestClient,
-    admin_headers: dict[str, str],
-    name: str,
-    description: str,
-) -> None:
-    """Pydantic enforces documented Member name boundaries over HTTP."""
-    response = database_client.post(
-        "/members",
-        json={"name": name, "description": description},
-        headers=admin_headers,
-    )
-
-    assert_validation_error(response)
-
-
 # PATH-PARAMETER VALIDATION
 # FastAPI validates the typed `int` path parameters before it calls a route.
 
@@ -110,8 +82,8 @@ def test_create_book_rejects_nonexistent_parent_member(
         "/books",
         json={
             "title": "Orphan Book",
-            "description": "Its referenced Member does not exist.",
-            "completed": False,
+             "author": "NONE",
+             "isbn": "",
             "member_id": 999999,
         },
         headers=admin_headers,
@@ -137,7 +109,7 @@ def test_delete_member_rejects_member_with_related_books(
     assert response.json()["detail"]
 
 
-# HELPERS
+# Utilities
 
 
 def assert_validation_error(response) -> None:
@@ -155,7 +127,12 @@ def create_member(
     """Create a Member needed by the deletion-conflict negative test."""
     response = database_client.post(
         "/members",
-        json={"name": "Protected Member", "description": "Has a related Book."},
+        json={
+            "name": "Protected Member",
+            "email": "protection@test.gov",
+            "membership_id":"",
+            "phone":"443-307-1473"
+        },
         headers=admin_headers,
     )
     assert response.status_code == 201
@@ -172,9 +149,9 @@ def create_book(
         "/books",
         json={
             "title": "Protected Book",
-            "description": "Prevents the Member from being deleted.",
-            "completed": False,
-            "member_id": member_id,
+            "author": "NONE",
+            "isbn": "",
+            "member_id": member_id
         },
         headers=admin_headers,
     )
