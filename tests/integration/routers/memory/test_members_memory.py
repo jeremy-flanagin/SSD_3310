@@ -33,7 +33,9 @@ def test_member_crud_works_with_memory_client(
         "/members",
         json={
             "name": "Memory Member",
-            "description": "Stored by the in-memory service.",
+            "email": "member@email.com",
+            "membership_id": "memory_test",
+            "phone": "443-307-1473"
         },
         headers=admin_headers,
     )
@@ -47,15 +49,17 @@ def test_member_crud_works_with_memory_client(
     assert get_response.status_code == 200
     assert get_response.json() == member
 
-    replace_response = memory_client.put(
+    update_response = memory_client.patch(
         f"/members/{member['id']}",
         json={
             "name": "Updated Memory Member",
-            "description": "Updated without PostgreSQL.",
+            "email": "member@email.com",
+            "membership_id": "memory_test",
+            "phone": "443-307-1473"
         },
         headers=admin_headers,
     )
-    assert replace_response.status_code == 200
+    assert update_response.status_code == 200
 
     delete_response = memory_client.delete(
         f"/members/{member['id']}", headers=admin_headers
@@ -75,8 +79,8 @@ def test_member_books_route_works_with_memory_client(
         "/books",
         json={
             "title": "Memory Book",
-            "description": "Related to an in-memory member.",
-            "completed": False,
+            "author":"NONE",
+            "isbn":"4895348957",
             "member_id": member["id"],
         },
         headers=admin_headers,

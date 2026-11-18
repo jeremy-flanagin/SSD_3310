@@ -108,9 +108,9 @@ def memory_client(
     monkeypatch.setenv("STORAGE_BACKEND", "memory")
     monkeypatch.delenv("DATABASE_URL", raising=False)
 
-    from api.main import api
+    from src.main import api
 
-    with TestClient(app) as test_client:
+    with TestClient(api) as test_client:
         # FastAPI's lifespan creates a fresh InMemoryStore for this client, so
         # projects and tasks cannot leak between memory router tests.
         yield test_client

@@ -12,8 +12,8 @@ def create_member(
         "/members",
         json={
             "name": name,
-            "email": "member@email.com",
-            "membership_id": "membership",
+            "email": name + "@email.com",
+            "membership_id": name + "_membership",
             "phone": "443-307-1473"
         },
         headers=admin_headers,
@@ -50,7 +50,7 @@ def test_replace_member_updates_the_public_resource(
 ) -> None:
     member = create_member(database_client, admin_headers, "Original")
 
-    replace_response = database_client.put(
+    update_response = database_client.patch(
         f"/members/{member['id']}",
         json={
             "name": "Updated",
@@ -61,14 +61,14 @@ def test_replace_member_updates_the_public_resource(
         headers=admin_headers,
     )
 
-    assert replace_response.status_code == 200
-    updated_member = replace_response.json()
+    assert update_response.status_code == 200
+    updated_member = update_response.json()
     assert updated_member == {
         "id": member["id"],
         "name": "Updated",
         "email": "member@email.com",
         "membership_id": "membership",
-        "phone": "443-307-1473"
+        "phone": "tel:+1-443-307-1473"
     }
 
     get_response = database_client.get(

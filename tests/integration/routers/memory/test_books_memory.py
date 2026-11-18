@@ -47,7 +47,7 @@ def test_book_crud_works_with_memory_client(
     assert get_response.status_code == 200
     assert get_response.json() == book
 
-    replace_response = memory_client.put(
+    update_response = memory_client.patch(
         f"/books/{book['id']}",
         json={
             "title": "Updated Memory Book",
@@ -57,7 +57,7 @@ def test_book_crud_works_with_memory_client(
         },
         headers=admin_headers,
     )
-    assert replace_response.status_code == 200
+    assert update_response.status_code == 200
 
     delete_response = memory_client.delete(
         f"/books/{book['id']}", headers=admin_headers

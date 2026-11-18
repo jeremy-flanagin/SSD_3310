@@ -1,3 +1,5 @@
+from datetime import date
+
 from starlette.testclient import TestClient
 
 # Utilities
@@ -10,8 +12,8 @@ def create_member(
         "/members",
         json={
             "name": name,
-            "email": "member@email.com",
-            "membership_id": "membership",
+            "email": name+"@email.com",
+            "membership_id": name+"_membership",
             "phone": "443-307-1473"
         },
         headers=admin_headers,
@@ -31,7 +33,7 @@ def create_book(
         json={
             "title": title,
             "author": "None",
-            "isbn": "123456789",
+            "isbn": title,
             "member_id": member_id,
         },
         headers=admin_headers,
@@ -63,35 +65,36 @@ def test_create_list_and_get_books(
     assert get_response.json() == first_book
 
 
-def test_replace_book_updates_the_public_resource(
+def test_update_book_updates_the_public_resource(
     database_client: TestClient,
     admin_headers: dict[str, str],
 ) -> None:
     original_member = create_member(database_client, admin_headers, "Original Member")
-    replacement_member = create_member(
-        database_client, admin_headers, "Replacement Member"
+    updated_member = create_member(
+        database_client, admin_headers, "Updated Member"
     )
     book = create_book(database_client, admin_headers, original_member["id"], "Original Book")
 
-    replace_response = database_client.put(
+    update_response = database_client.patch(
         f"/books/{book['id']}",
         json={
             "title": "Updated Book",
             "author": "API",
             "isbn": "123456789",
-            "member_id": replacement_member["id"],
+            "member_id": updated_member["id"],
         },
         headers=admin_headers,
     )
 
-    assert replace_response.status_code == 200
-    updated_book = replace_response.json()
+    assert update_response.status_code == 200
+    updated_book = update_response.json()
     assert updated_book == {
         "id": book["id"],
         "title": "Updated Book",
         "author": "API",
         "isbn": "123456789",
-        "member_id": replacement_member["id"],
+        "published_year": date.today().year,
+        "member_id": updated_member["id"],
     }
 
     get_response = database_client.get(
