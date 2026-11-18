@@ -14,7 +14,7 @@ def create_member(session: Session, name: str):
     repository = MemberRepository(session)
     member = repository.create(
         MemberInput(name=name,
-`                    email=name + "@mail.com",
+                    email=name + "@mail.com",
                     membership_id=name,
                     phone="443-307-1473")
     )
