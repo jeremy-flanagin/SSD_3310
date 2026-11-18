@@ -14,8 +14,8 @@ def create_member(session: Session, name: str):
     repository = MemberRepository(session)
     member = repository.create(
         MemberInput(name=name,
-                    email="mail@mail.com",
-                    membership_id="",
+`                    email=name + "@mail.com",
+                    membership_id=name,
                     phone="443-307-1473")
     )
     session.commit()
@@ -99,7 +99,7 @@ def test_replace_updates_all_editable_book_columns(db_session: Session) -> None:
         BookPatchInput(
             title="Updated",
             author="New Author",
-            isbn="123456789",
+            isbn="987654321",
             member_id=replacement_member.id
         )
     )
@@ -108,7 +108,7 @@ def test_replace_updates_all_editable_book_columns(db_session: Session) -> None:
 
     assert updated.title == "Updated"
     assert updated.author == "New Author"
-    assert updated.isbn == "123456789"
+    assert updated.isbn == "987654321"
     assert updated.member_id == replacement_member.id
 
 
