@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, status, HTTPException
 from fastapi.params import Depends
 
+from src.auth.dependencies import AUTHENTICATED_RESPONSES, CurrentUser, ADMIN_RESPONSES, AdminUser
 from src.exceptions import BookNotFoundException, MemberNotFoundException, DuplicateISBNException
 from src.models.book import Book
 from src.router.http_errors import book_not_found, member_not_found, book_must_have_unique_isbn
@@ -21,12 +22,16 @@ router = APIRouter(prefix="/books", tags=["Books"])
     summary="Gets all books",
     description="Gets all books from the library.",
     responses={
+        **AUTHENTICATED_RESPONSES,
         200: {
             "description": "A list of books",
         }
     }
 )
-def get_books(service: BookService = Depends(get_book_service)) -> List[Book]:
+def get_books(
+        _current_user: CurrentUser,
+        service: BookService = Depends(get_book_service)
+) -> list[Book]:
     return service.get_books()
 
 @router.get(
@@ -35,10 +40,17 @@ def get_books(service: BookService = Depends(get_book_service)) -> List[Book]:
     status_code=status.HTTP_200_OK,
     summary="Gets a book",
     description="Gets a book from the library matching the given id.",
-    responses={404:{"description":"Book not found"},
-               409:{"description":"ISBN must be unique"}}
+    responses={
+        **AUTHENTICATED_RESPONSES,
+        404:{"description":"Book not found"},
+        409:{"description":"ISBN must be unique"}
+    }
 )
-def get_book(book_id: int, service: BookService = Depends(get_book_service)) -> Book:
+def get_book(
+        book_id: int,
+        _current_user: CurrentUser,
+        service: BookService = Depends(get_book_service)
+) -> Book:
     try:
         return service.get_book(book_id)
     except BookNotFoundException:
@@ -51,6 +63,7 @@ def get_book(book_id: int, service: BookService = Depends(get_book_service)) -> 
     summary="Create a book",
     description="Creates a book from all required inputs.",
     responses= {
+        **ADMIN_RESPONSES,
         201: {
             "description": "The created book",
         },
@@ -59,7 +72,11 @@ def get_book(book_id: int, service: BookService = Depends(get_book_service)) -> 
         }
     }
 )
-def create_book(base: BookInput, service: BookService = Depends(get_book_service)) -> Book:
+def create_book(
+        base: BookInput,
+        _admin_user: AdminUser,
+        service: BookService = Depends(get_book_service)
+) -> Book:
     try:
         return service.create_book(base)
     except MemberNotFoundException:
@@ -73,10 +90,18 @@ def create_book(base: BookInput, service: BookService = Depends(get_book_service
     status_code=status.HTTP_200_OK,
     summary="Updates a book",
     description="Updates a book to change some of its content.",
-    responses={404:{"description":"Book not found"},
-               409:{"description":"ISBN must be unique"}}
+    responses={
+        **ADMIN_RESPONSES,
+        404:{"description":"Book not found"},
+        409:{"description":"ISBN must be unique"}
+    }
 )
-def update_book(book_id: int, data: BookPatchInput, service: BookService = Depends(get_book_service)) -> Book:
+def update_book(
+        book_id: int,
+        _admin_user: AdminUser,
+        data: BookPatchInput,
+        service: BookService = Depends(get_book_service)
+) -> Book:
     try:
         return service.update_book(book_id, data)
     except BookNotFoundException:
@@ -89,9 +114,16 @@ def update_book(book_id: int, data: BookPatchInput, service: BookService = Depen
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Deletes a book",
     description="Removes a book from the library",
-    responses={404:{"description":"Book not found"}}
+    responses={
+        **ADMIN_RESPONSES,
+        404:{"description":"Book not found"}
+    }
 )
-def delete_book(book_id: int, service: BookService = Depends(get_book_service)):
+def delete_book(
+        book_id: int,
+        _admin_user: AdminUser,
+        service: BookService = Depends(get_book_service)
+):
     try:
         service.delete_book(book_id)
     except BookNotFoundException:

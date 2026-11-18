@@ -27,7 +27,7 @@ class DatabaseBookService(BookService):
             return book
 
     def create_book(self, base: BookInput) -> Book:
-        with self._session_factory().begin().session as session:
+        with self._session_factory.begin() as session:
             book_repository = BookRepository(session)
             member_repository = MemberRepository(session)
             if not member_repository.get(base.member_id):
@@ -40,7 +40,7 @@ class DatabaseBookService(BookService):
             return book
 
     def update_book(self, book_id: int, data: BookPatchInput) -> Book:
-        with self._session_factory().begin().session as session:
+        with self._session_factory.begin() as session:
             repository = BookRepository(session)
             book = repository.get(book_id)
             if book is None:
@@ -53,7 +53,7 @@ class DatabaseBookService(BookService):
             return book
 
     def delete_book(self, book_id: int):
-        with self._session_factory().begin().session as session:
+        with self._session_factory.begin() as session:
             repository = BookRepository(session)
             book = repository.get(book_id)
             if book is None:

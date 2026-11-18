@@ -17,7 +17,7 @@ class MemberBase(BaseModel):
         description="The name of the member.",
         examples=["Dane Deckerson"]
     )
-    email: EmailStr = Field(
+    email: Union[str, EmailStr] = Field(
         description="The member's email address.",
         examples=["DaneDeckerson@gmail.com"]
     )
@@ -26,7 +26,7 @@ class MemberBase(BaseModel):
     )
     phone: Annotated[Union[str, PhoneNumber], PhoneNumberValidator(default_region='US')] = Field(
         description="The member's phone number.",
-        examples=["214-895-3258"],
+        examples=["443-307-1473"],
     )
 
 class MemberInput(MemberBase):
@@ -58,7 +58,7 @@ class MemberPatchInput(BaseModel):
     phone: Optional[Annotated[Union[str, PhoneNumber], PhoneNumberValidator(default_region='US')]] = Field(
         description="The member's phone number.",
         default=None,
-        examples=["214-895-3258"]
+        examples=["443-307-1473"]
     )
 
 class MemberResponse(MemberBase):

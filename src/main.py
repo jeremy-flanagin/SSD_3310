@@ -24,38 +24,39 @@ tags = [
     }
 ]
 
-api = FastAPI(
-    title= "Library Management System API",
-    description= "Provides an API to manage the library. "
-                 "Provides the ability to create, find, delete, and update Members and Books.",
-    version= "0.2.0",
-    openapi_tags=tags
-)
-
-api.include_router(books_router)
-api.include_router(members_router)
-
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     """Initialize application-scoped infrastructure at startup."""
     settings = Settings()
-    application.state.settings = settings
+    application.settings = settings
 
     if settings.database_backend is DatabaseBackend.MEMORY:
         store = InMemoryStorage()
-        application.state.book_service = InMemoryBookService(store)
-        application.state.member_service = InMemoryMemberService(store)
+        application.book_service = InMemoryBookService(store)
+        application.member_service = InMemoryMemberService(store)
     elif settings.database_backend is DatabaseBackend.DATABASE:
         database = create_database(settings)
         Base.metadata.create_all(bind=database.engine)
         # Services are stateless and safe to share. They receive the session
         # factory, not one shared Session, so each database operation creates
         # its own unit of work and controls its own transaction.
-        application.state.book_service = DatabaseBookService(
+        application.book_service = DatabaseBookService(
             database.session_factory
         )
-        application.state.member_service = DatabaseMemberService(
+        application.member_service = DatabaseMemberService(
             database.session_factory
         )
     # Code after yield would run during application shutdown.
     yield
+
+api = FastAPI(
+    title= "Library Management System API",
+    description= "Provides an API to manage the library. "
+                 "Provides the ability to create, find, delete, and update Members and Books.",
+    version= "0.3.0",
+    openapi_tags=tags,
+    lifespan=lifespan
+)
+
+api.include_router(books_router)
+api.include_router(members_router)

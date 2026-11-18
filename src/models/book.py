@@ -1,9 +1,7 @@
-from sqlalchemy import String
-from sqlalchemy.orm import mapped_column, relationship, Mapped
+from sqlalchemy import String, ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from src.models.base import Base
-from src.models.member import Member
-
 
 class Book(Base):
     __tablename__ = 'book'
@@ -13,6 +11,5 @@ class Book(Base):
     author: Mapped[str] = mapped_column(String(120), nullable=False)
     isbn: Mapped[str] = mapped_column(nullable=False)
     published_year: Mapped[int] = mapped_column(nullable=False)
-    member_id: Mapped[int] = mapped_column(nullable=False)
-
-    member: Mapped[Member] = relationship(back_populates="book")
+    member_id: Mapped[int] = mapped_column(ForeignKey("member.id"))
+    member: Mapped["Member"] = relationship(back_populates="books")

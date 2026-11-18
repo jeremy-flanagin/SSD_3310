@@ -33,11 +33,9 @@ class DatabaseMemberService(MemberService):
             return member.books
 
     def create_member(self, base: MemberInput) -> Member:
-        with self._session_factory().begin().session as session:
+        with self._session_factory.begin() as session:
             member_repository = MemberRepository(session)
             for member in member_repository.get_all():
-                if member.id == member.id:
-                    continue
                 if member.email == base.email:
                     raise DuplicateEmailException
                 if member.membership_id == base.membership_id:
@@ -47,13 +45,13 @@ class DatabaseMemberService(MemberService):
             return member
 
     def update_member(self, member_id: int, data: MemberPatchInput) -> Member:
-        with self._session_factory().begin().session as session:
+        with self._session_factory.begin() as session:
             repository = MemberRepository(session)
             member = repository.get(member_id)
             if member is None:
                 raise MemberNotFoundException
             for member in repository.get_all():
-                if member.id == member.id:
+                if member.id == member_id:
                     continue
                 if member.email == data.email:
                     raise DuplicateEmailException
@@ -64,7 +62,7 @@ class DatabaseMemberService(MemberService):
             return member
 
     def delete_member(self, member_id: int):
-        with self._session_factory().begin().session as session:
+        with self._session_factory.begin() as session:
             repository = MemberRepository(session)
             member = repository.get(member_id)
             if member is None:

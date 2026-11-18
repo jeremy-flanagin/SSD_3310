@@ -13,7 +13,6 @@ class DatabaseInstance:
 
 
 def create_database(settings: Settings) -> DatabaseInstance:
-
     engine = create_engine(url=settings.database_url, echo=settings.database_debug)
     session_factory = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 

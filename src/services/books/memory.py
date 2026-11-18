@@ -51,4 +51,5 @@ class InMemoryBookService(BookService):
             for index, book in enumerate(self._store.books):
                 if book.id == book_id:
                     self._store.books.remove(book)
+                    return
             raise BookNotFoundException

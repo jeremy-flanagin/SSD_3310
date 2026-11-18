@@ -17,4 +17,4 @@ class Member(Base):
     membership_id: Mapped[str] = mapped_column(nullable=False)
     phone: Mapped[str] = mapped_column(nullable=False)
 
-    books: Mapped[List[Book]] = relationship(back_populates="member")
+    books: Mapped[List["Book"]] = relationship(back_populates="member")
