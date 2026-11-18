@@ -54,8 +54,8 @@ class InMemoryMemberService(MemberService):
                     raise DuplicateEmailException
                 if oMember.membership_id == member.membership_id:
                     raise DuplicateMembershipException
-            update_data = data.model_dump(exclude_unset=True, exclude_none=True)
-            member.__dict__.update(update_data)
+            for field, value in data.model_dump(exclude_unset=True, exclude_none=True).items():
+                setattr(member, field, value)
             return member
 
     def delete_member(self, member_id: int):

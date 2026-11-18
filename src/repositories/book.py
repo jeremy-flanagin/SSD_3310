@@ -26,8 +26,8 @@ class BookRepository(ABC):
         return book
 
     def update(self, book: Book, data: BookPatchInput) -> Book:
-        update_data = data.model_dump(exclude_unset=True, exclude_none=True)
-        book.__dict__.update(update_data)
+        for field, value in data.model_dump(exclude_unset=True, exclude_none=True).items():
+            setattr(book, field, value)
         self.session.flush()
         return book
 

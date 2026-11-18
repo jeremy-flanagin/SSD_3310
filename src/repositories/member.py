@@ -27,8 +27,8 @@ class MemberRepository(ABC):
         return member
 
     def update(self, member: Member, data: MemberPatchInput) -> Member:
-        update_data = data.model_dump(exclude_unset=True, exclude_none=True)
-        member.__dict__.update(update_data)
+        for field, value in data.model_dump(exclude_unset=True, exclude_none=True).items():
+            setattr(member, field, value)
         self.session.flush()
         return member
 
