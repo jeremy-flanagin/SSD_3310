@@ -16,7 +16,6 @@ dependencies = [
     "mockito>=2.0.0",
     "testcontainers>=4.15.0",
     "httpx2>=2.16.0",
-    "schemathesis>=4.33.0",
     "openapi_spec_validator>=0.9.0"
 ]
 

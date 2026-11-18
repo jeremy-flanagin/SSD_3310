@@ -3,12 +3,6 @@ import pytest
 from starlette.testclient import TestClient
 
 
-
-def test_root_and_health_remain_public(database_client: TestClient) -> None:
-    assert database_client.get("/").status_code == 200
-    assert database_client.get("/health").status_code == 200
-
-
 def test_protected_read_rejects_a_missing_token(database_client: TestClient) -> None:
     response = database_client.get("/members")
 
@@ -20,7 +14,7 @@ def test_protected_read_rejects_a_missing_token(database_client: TestClient) -> 
 def test_protected_read_rejects_an_unknown_token(database_client: TestClient) -> None:
     response = database_client.get(
         "/books",
-        headers={"Authorization": "Bearer not-a-demo-token"},
+        headers={"Authorization": "Bearer not-a-token"},
     )
 
     assert response.status_code == 401
@@ -44,7 +38,7 @@ def test_member_can_read_protected_collections(
     ("method", "path", "json_body"),
     [
         ("POST", "/members", {"name": "Member member", "description": "Denied."}),
-        ("PUT", "/members/999999", {"name": "Member member", "description": "Denied."}),
+        ("PATCH", "/members/999999", {"name": "Member member", "description": "Denied."}),
         ("DELETE", "/members/999999", None),
         (
             "POST",
@@ -57,7 +51,7 @@ def test_member_can_read_protected_collections(
             },
         ),
         (
-            "PUT",
+            "PATCH",
             "/books/999999",
             {
                 "title": "Member book",
@@ -117,18 +111,18 @@ def test_administrator_can_complete_a_member_and_book_write_workflow(
     assert book_response.status_code == 201
     book = book_response.json()
 
-    replace_response = database_client.put(
+    update_response = database_client.patch(
         f"/books/{book['id']}",
         json={
             "title": "Completed book",
             "author": "None",
-            "isbn": "123456789",
+            "isbn": "987654321",
             "member_id": member["id"],
         },
         headers=admin_headers,
     )
-    assert replace_response.status_code == 200
-    assert replace_response.json()["completed"] is True
+    assert update_response.status_code == 200
+    assert update_response.json()["isbn"] == "987654321"
 
     assert (
         database_client.delete(

@@ -25,6 +25,10 @@ The application uses FastAPI to define the API routes and automatically generate
 - FastAPI
 - Uvicorn
 - Pydantic
+- Pytest
+- Mockito
+- Testcontainers
+- SQLAlchemy
 
 ## Getting Started
 
@@ -106,7 +110,9 @@ Example response:
     "id": 1,
     "title": "The Hobbit",
     "author": "J.R.R. Tolkien",
-    "available": true
+    "isbn": "97685848382",
+    "published_year": 1982,
+    "member_id": 0
   }
 ]
 ```
@@ -122,18 +128,22 @@ curl -X POST http://127.0.0.1:8000/books \\
   -d '{
     "title": "The Hobbit",
     "author": "J.R.R. Tolkien",
-    "available": true
+    "isbn": "97685848382",
+    "published_year": 1982,
+    "member_id": 0
   }'
 ```
 Update a book
 ```bash
 
-curl -X PUT http://127.0.0.1:8000/books/1 \\
+curl -X PATCH http://127.0.0.1:8000/books/1 \\
   -H "Content-Type: application/json" \\
   -d '{
     "title": "The Hobbit",
     "author": "J.R.R. Tolkien",
-    "available": false
+    "isbn": "97685848382",
+    "published_year": 1982,
+    "member_id": 0
   }'
 ```
 Delete a book
@@ -153,7 +163,9 @@ Example response:
   {
     "id": 1,
     "name": "Alex Smith",
-    "email": "alex.smith@example.com"
+    "email": "alex.smith@example.com",
+    "membership_id": "alexsmith1",
+    "phone":"tel:+1-492-592-5320"
   }
 ]
 ```
@@ -169,17 +181,21 @@ curl -X POST http://127.0.0.1:8000/members \\
   -H "Content-Type: application/json" \\
   -d '{
     "name": "Alex Smith",
-    "email": "alex.smith@example.com"
+    "email": "alex.smith@example.com",
+    "membership_id": "alexsmith1",
+    "phone":"492-592-5320"
   }'
 ```
 Update a member
 ```bash
 
-curl -X PUT http://127.0.0.1:8000/members/1 \\
+curl -X PATCH http://127.0.0.1:8000/members/1 \\
   -H "Content-Type: application/json" \\
   -d '{
     "name": "Alex Johnson",
-    "email": "alex.johnson@example.com"
+    "email": "alex.johnson@example.com",
+    "membership_id": "alexjohnson1",
+    "phone":"492-592-2148"
   }'
 ```
 Delete a member
@@ -192,7 +208,7 @@ curl -X DELETE http://127.0.0.1:8000/members/1
 |--------|---------|
 | GET	   | Retrieve books or members|
 | POST   |	Create a new book or member|
-| PUT	   |Update an existing book or member|
+| PATCH	|Update an existing book or member|
 | DELETE | Remove a book or member|
 ### Project Structure
 
@@ -209,39 +225,43 @@ SSD\_3310/
     ├── exceptions.py
     ├── config.py
     ├── service_accessor.py
-    └── database/
+    ├── auth/
+        ├── __init__.py
+        ├── dependencies.py
+        └── users.py
+    ├── database/
         ├── __init__.py
         └── session.py
-    └── models/
+    ├── models/
         ├── __init__.py
         ├── base.py
         ├── book.py
         └── members.py
-    └── repositories/
+    ├── repositories/
         ├── __init__.py
         ├── book.py
         └── member.py
-    └── router/
+    ├── router/
         ├── __init__.py
         ├── books.py
         ├── http_errors.py
         └── members.py
-    └── schema/
+    ├── schema/
         ├── __init__.py
         ├── books.py
         └── members.py
     └── schema/
-        └── books/
+        ├── books/
             ├── __init__.py
             ├── base.py
             ├── database.py
             └── memory.py
-        └── members/
+        ├── members/
             ├── __init__.py
             ├── base.py
             ├── database.py
             └── memory.py
         ├── __init__.py
-        ├── in_memory_store.py
+        └── in_memory_store.py
 ```
 The main.py file contains the FastAPI application and route definitions.

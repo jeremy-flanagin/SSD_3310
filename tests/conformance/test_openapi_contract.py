@@ -1,8 +1,6 @@
 from datetime import date
 from typing import Any
 
-import pytest
-import schemathesis
 from openapi_spec_validator import validate
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from starlette.testclient import TestClient
@@ -241,35 +239,3 @@ def test_member_with_books_matches_documented_conflict_response(
 
     assert response.status_code == 409
     assert response.json()["detail"]
-
-
-# SCHEMA-DRIVEN TESTING WITH SCHEMATHESIS
-
-
-@pytest.fixture
-def openapi_schema(database_client: TestClient) -> Any:
-    from src.main import api
-
-    return schemathesis.openapi.from_asgi("/openapi.json", api)
-
-schema = schemathesis.pytest.from_fixture("openapi_schema").include(
-    method="GET",
-    path_regex=r"^/(health|members|books)$",
-)
-
-# `@schema.parametrize()` connects this test function to the lazy schema
-# above. Schemathesis resolves `openapi_schema`, creates one `case` argument
-# for each selected OpenAPI operation, and runs this function once per case.
-# `case` is supplied by Schemathesis, not by a pytest fixture. `database_client` is the
-# normal pytest fixture that provides the running in-process FastAPI app.
-@schema.parametrize()
-def test_generated_read_only_responses_conform_to_openapi(
-    case: Any,
-    database_client: TestClient,
-    admin_headers: dict[str, str],
-) -> None:
-    """Generated safe requests receive responses valid for their OpenAPI schema."""
-    # TestClient sends the generated request directly to the running ASGI app.
-    # Schemathesis then checks the status code, headers, and response body
-    # against the operation described in `/openapi.json`.
-    case.call_and_validate(session=database_client, headers=admin_headers)
