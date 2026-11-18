@@ -20,10 +20,10 @@ def test_openapi_declares_the_bearer_authentication_scheme(
     [
         ("/members", "get", {"200", "401"}),
         ("/members", "post", {"201", "401", "403", "422"}),
-        ("/members/{project_id}", "post", {"200", "401", "403", "404", "422"}),
+        ("/members/{member_id}", "post", {"200", "401", "403", "404", "422"}),
         ("/books", "get", {"200", "401"}),
         ("/books", "post", {"201", "401", "403", "404", "422"}),
-        ("/books/{task_id}", "delete", {"204", "401", "403", "404", "422"}),
+        ("/books/{book_id}", "delete", {"204", "401", "403", "404", "422"}),
     ],
 )
 def test_openapi_marks_resource_operations_as_bearer_protected(
